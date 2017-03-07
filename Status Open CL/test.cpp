@@ -7,6 +7,7 @@
 #include <CL/cl.h>
 #endif
 //using namespace std;
+
 #define MAX_NAME_LEN 1000
 
 
