@@ -9,6 +9,9 @@
 //using namespace std;
 #define MAX_NAME_LEN 1000
 
+
+
+
 int main(int argc, char* const argv[]) {
 
 	//Number of devices
@@ -38,15 +41,14 @@ int main(int argc, char* const argv[]) {
 //Getting device ids
 //    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
 		clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
-		cl_device_id* devices = (cl_device_id*) calloc(sizeof(cl_device_id),
-				num_devices);
+		cl_device_id* devices = (cl_device_id*) malloc(num_devices*sizeof(cl_device_id));
 		clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, num_devices, devices,
 				NULL);
 
 		for (j = 0; j < num_devices; j++) {
 			cl_device_type cl_buf;
-			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, 128, buf, NULL);
-			fprintf(stdout, "Device %s supports ", buf);
+			clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof(buf), buf, NULL);
+			fprintf(stdout, "Device[%d] %s supports ", j,buf);
 
 			clGetDeviceInfo(devices[j], CL_DEVICE_VERSION, 128, buf, NULL);
 
@@ -81,8 +83,8 @@ int main(int argc, char* const argv[]) {
 			// print parallel compute units
 			clGetDeviceInfo(devices[j], CL_DEVICE_MAX_COMPUTE_UNITS,
 					sizeof(maxComputeUnits), &maxComputeUnits, NULL);
-			printf(" device id %lu\n %d.%d Parallel compute units: %d\n",
-					devices[j], j + 1, 4, maxComputeUnits);
+			printf(" %d.%d Parallel compute units: %d\n",
+					j + 1, 4, maxComputeUnits);
 
 			clGetDeviceInfo(devices[j], CL_DEVICE_TYPE, 128, &cl_buf, NULL);
 
