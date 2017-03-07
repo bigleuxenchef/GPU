@@ -24,22 +24,23 @@
 								<option id="gnu.cpp.compiler.option.include.paths.1924590185" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false"/>
 								<option id="gnu.cpp.compiler.option.optimization.level.1775577476" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.1646267752" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.dialect.std.937389136" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.937389136" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1589964211" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1799331188" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-								<option id="gnu.c.compiler.option.include.paths.1159243105" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false"/>
+								<option id="gnu.c.compiler.option.include.paths.1159243105" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="/System/Library/Frameworks/OpenCL.framework/Versions/A/Headers"/>
+								</option>
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1685024034" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.22160303" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.files.492631546" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.596957885" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1499926355" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1251054727" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-								<option id="gnu.cpp.link.option.libs.595162499" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
-									<listOptionValue builtIn="false" value="OpenCL"/>
-								</option>
-								<option id="gnu.cpp.link.option.paths.1582985080" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths"/>
+							<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.linker.base.1251054727" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
+								<option id="gnu.cpp.link.option.libs.595162499" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs"/>
+								<option id="gnu.cpp.link.option.paths.1582985080" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false"/>
+								<option id="gnu.cpp.link.option.flags.389146711" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-framework OpenCL " valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.935626409" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -77,12 +78,14 @@
 								<option id="gnu.cpp.compiler.option.include.paths.2040395630" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false"/>
 								<option id="gnu.cpp.compiler.option.optimization.level.2130859794" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.239667589" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.dialect.std.1563658059" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.1563658059" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.codecov.142763277" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.cpp.compiler.option.debugging.codecov" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.648616827" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.2126600301" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-								<option id="gnu.c.compiler.option.include.paths.1809815313" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false"/>
+								<option id="gnu.c.compiler.option.include.paths.1809815313" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="/System/Library/Frameworks/OpenCL.framework/Versions/A/Headers"/>
+								</option>
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1336396190" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.641213898" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.files.1120510473" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false"/>
