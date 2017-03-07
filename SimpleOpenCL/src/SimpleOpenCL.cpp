@@ -465,8 +465,7 @@ int main(int argc, char** argv) {
 	}
 
 
-	std::cout << "Elapsed time: " << duration<double, std::milli>(endclock).count() << ".\n";
-
+	std::cout << "Elapsed time: " << duration<double, std::ratio<1>>(endclock).count() << ".\n";
 
 
 	printf("bye ...\n");
