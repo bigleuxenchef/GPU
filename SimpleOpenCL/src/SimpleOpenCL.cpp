@@ -62,7 +62,11 @@
 #include <sys/stat.h>
 #include <cmath>
 #include <time.h>
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
+#else
+#include <CL/cl.h>
+#endif
 #include <chrono>
 #include <iostream>
 using namespace std::chrono;
@@ -89,6 +93,7 @@ using namespace std::chrono;
 #define SCRATCH_SIZE 2048
 #define USAGE "SimpleOpenCl OPTIONS\n \
 \t-g        - Use CPU instead of GPU \n\
+\t-p [NUM]  - Platform Id in case more than one platform \n\
 \t-h        - Display this message \n\
 \t-v []     - Display extra information 0-1-2\n \
 \t-k        - Validate opertion\n \
@@ -154,8 +159,9 @@ int main(int argc, char** argv) {
 
 	size_t global;                     // global domain size for our calculation
 	size_t local;                       // local domain size for our calculation
+	cl_uint platformCount;
 
-	cl_device_id device_id;             // compute device id
+	cl_device_id *device_id;             // compute device id
 	cl_context context;                 // compute context
 	cl_command_queue commands;          // compute command queue
 	cl_program program;                 // compute program
@@ -164,6 +170,7 @@ int main(int argc, char** argv) {
 	cl_mem input;                      // device memory used for the input array
 	cl_mem output;                    // device memory used for the output array
 	int gpu = 1;
+	int platform_id=0;
 	// Fill our data set with random float values
 	//
 	int i = 0, opt, verbose, validate = 0;
@@ -173,9 +180,11 @@ int main(int argc, char** argv) {
 	c_build, c_kernel, *c_startcopydata, *c_copydata, *c_execute,
 	*c_readback, c_test, c_end;
 	int thread = NUMBER_THREAD;
+	cl_uint num_devices = 2;
 
+	device_id = (cl_device_id*) malloc(num_devices*sizeof(cl_device_id));
 
-	while ((opt = getopt(argc, argv, "gchkv:s:t:b:")) != -1) {
+	while ((opt = getopt(argc, argv, "gchkv:s:t:b:p:")) != -1) {
 		switch (opt) {
 
 
@@ -203,6 +212,9 @@ int main(int argc, char** argv) {
 		case 't':
 			thread = atoi(optarg);
 			break;
+		case 'p':
+			platform_id = atoi(optarg);
+			break;
 
 		}
 	}
@@ -217,18 +229,28 @@ int main(int argc, char** argv) {
 
 	for (i = 0; i < count; i++)
 		data[i] = i + 1; //rand() / (float)RAND_MAX;
+
+	//get number of platforms aka potential # of cards like CPU /GPU
+		clGetPlatformIDs(0, NULL, &platformCount);
+	// allocating structure for number of plaform
+		cl_platform_id *platforms = (cl_platform_id *) malloc(
+				platformCount * sizeof(cl_platform_id));
+	// Get platform list of IDs
+		clGetPlatformIDs(platformCount, platforms, NULL);
+
+
 	c_meminit = clock();
 
 	// Connect to a compute device
 	//
-	err = clGetDeviceIDs(NULL, gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1,
-			&device_id, NULL);
+	err = clGetDeviceIDs(platforms[platform_id], gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1,
+			device_id, NULL);
 	if (err != CL_SUCCESS) {
 		printf("Error: Failed to create a device group!\n");
 		return EXIT_FAILURE;
 	} else {
 		char scratch[SCRATCH_SIZE];
-		clGetDeviceInfo(device_id, CL_DEVICE_NAME, SCRATCH_SIZE, scratch, NULL);
+		clGetDeviceInfo(device_id[0], CL_DEVICE_NAME, SCRATCH_SIZE, scratch, NULL);
 
 		printf("%s device name : %s \n",gpu?"GPU":"CPU", scratch);
 	}
@@ -238,14 +260,14 @@ int main(int argc, char** argv) {
 	// Create a compute context
 	//
 
-	context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
+	context = clCreateContext(0, 1, device_id, NULL, NULL, &err);
 	if (!context) {
 		printf("Error: Failed to create a compute context!\n");
 		return EXIT_FAILURE;
 	} else {
 		cl_uint maxComputeUnits;
 
-		clGetDeviceInfo(device_id, CL_DEVICE_MAX_COMPUTE_UNITS,
+		clGetDeviceInfo(device_id[0], CL_DEVICE_MAX_COMPUTE_UNITS,
 				sizeof(maxComputeUnits), &maxComputeUnits, NULL);
 		printf("Parallel compute units: %d\n", maxComputeUnits);
 
@@ -254,7 +276,7 @@ int main(int argc, char** argv) {
 	//
 	c_context = clock();
 
-	commands = clCreateCommandQueue(context, device_id, 0, &err);
+	commands = clCreateCommandQueue(context, device_id[0], 0, &err);
 	if (!commands) {
 		printf("Error: Failed to create a command commands!\n");
 		return EXIT_FAILURE;
@@ -281,7 +303,7 @@ int main(int argc, char** argv) {
 		char buffer[2048];
 
 		printf("Error: Failed to build program executable!\n");
-		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
+		clGetProgramBuildInfo(program, device_id[0], CL_PROGRAM_BUILD_LOG,
 				sizeof(buffer), buffer, &len);
 		printf("%s\n", buffer);
 		exit(1);
@@ -321,7 +343,7 @@ int main(int argc, char** argv) {
 
 	// Get the maximum work group size for executing the kernel on the device
 	//
-	err = clGetKernelWorkGroupInfo(kernel, device_id, CL_KERNEL_WORK_GROUP_SIZE,
+	err = clGetKernelWorkGroupInfo(kernel, device_id[0], CL_KERNEL_WORK_GROUP_SIZE,
 			sizeof(local), &local, NULL);
 	if (err != CL_SUCCESS) {
 		printf("Error: Failed to retrieve kernel work group info! %d\n", err);
@@ -466,6 +488,7 @@ int main(int argc, char** argv) {
 
 
 	std::cout << "Elapsed time: " << duration<double, std::ratio<1>>(endclock).count() << ".\n";
+
 
 
 	printf("bye ...\n");
