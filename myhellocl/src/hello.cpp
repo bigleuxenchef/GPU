@@ -5,10 +5,12 @@
 #else
 #include <CL/cl.h>
 #endif
+#include <unistd.h>
+
 
 #define MEM_SIZE (128)
 #define MAX_SOURCE_SIZE (0x100000)
-
+#define SCRATCH_SIZE 1024
 int main()
 {
 cl_device_id device_id = NULL;
@@ -25,34 +27,37 @@ cl_int ret;
 char string[MEM_SIZE];
 
 FILE *fp;
-char fileName[] = "/Users/rumi/Documents/workspace/myhellocl/hello.cl";
+char fileName[] = "./hello.cl";
+char currentpath[SCRATCH_SIZE];
 char *source_str;
 size_t source_size;
 
+getcwd(currentpath,sizeof(currentpath));
+fprintf(stdout,"current working directory %s\n",currentpath);
 /* Load the source code containing the kernel*/
 fp = fopen(fileName, "r");
 if (!fp) {
 fprintf(stderr, "Failed to load kernel.\n");
 exit(1);
 }
+
+
 source_str = (char*)malloc(MAX_SOURCE_SIZE);
 source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
 fclose(fp);
 
 /* Get Platform and Device Info */
 ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
-
-//get number of platforms aka potential # of cards like CPU /GPU
-	clGetPlatformIDs(0, NULL, &ret_num_platforms);
-// allocating structure for number of plaform
-	cl_platform_id *platforms = (cl_platform_id *) malloc(
-			platformCount * sizeof(cl_platform_id));
-// Get platform list of IDs
-	clGetPlatformIDs(platformCount, platforms, NULL);
-
-
 ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
+if (ret != CL_SUCCESS) {
+		printf("Error: Failed to create a device group!\n");
+		return EXIT_FAILURE;
+	} else {
+		char scratch[SCRATCH_SIZE];
+		clGetDeviceInfo(device_id, CL_DEVICE_NAME, SCRATCH_SIZE, scratch, NULL);
 
+		printf("device name : %s \n", scratch);
+	}
 /* Create OpenCL context */
 context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
 
@@ -76,14 +81,13 @@ kernel = clCreateKernel(program, "hello", &ret);
 ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&memobj);
 
 /* Execute OpenCL Kernel */
-    {int i;
-        for(i=1;i<2000;i++)
+
 ret = clEnqueueTask(command_queue, kernel, 0, NULL,NULL);
 
 /* Copy results from the memory buffer */
 ret = clEnqueueReadBuffer(command_queue, memobj, CL_TRUE, 0,
 MEM_SIZE * sizeof(char),string, 0, NULL, NULL);
-    }
+
 /* Display Result */
 puts(string);
 
