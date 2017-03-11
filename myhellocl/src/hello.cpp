@@ -41,6 +41,16 @@ fclose(fp);
 
 /* Get Platform and Device Info */
 ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
+
+//get number of platforms aka potential # of cards like CPU /GPU
+	clGetPlatformIDs(0, NULL, &ret_num_platforms);
+// allocating structure for number of plaform
+	cl_platform_id *platforms = (cl_platform_id *) malloc(
+			platformCount * sizeof(cl_platform_id));
+// Get platform list of IDs
+	clGetPlatformIDs(platformCount, platforms, NULL);
+
+
 ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
 
 /* Create OpenCL context */
