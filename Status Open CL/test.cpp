@@ -26,7 +26,7 @@ int main(int argc, char* const argv[]) {
 
 //get number of platforms aka potential # of cards like CPU /GPU
 	clGetPlatformIDs(0, NULL, &platformCount);
-// allocating structure for number of plaform
+// allocating structure for number of platforms
 	cl_platform_id *platforms = (cl_platform_id *) malloc(
 			platformCount * sizeof(cl_platform_id));
 // Get platform list of IDs
