@@ -1,1 +1,4 @@
-/Debug/
+.classpath
+Release/
+Debug/
+.DS_Store
