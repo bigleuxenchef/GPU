@@ -38,19 +38,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: squareNonGPU
+all: myhellocl
 
 # Tool invocations
-squareNonGPU: $(OBJS) $(USER_OBJS)
+myhellocl: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MacOS X C++ Linker'
-	g++ -pg -ftest-coverage -fprofile-arcs -o "squareNonGPU" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -framework OpenCL  -o "myhellocl" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(OBJS)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) squareNonGPU
+	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(OBJS)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) myhellocl
 	-@echo ' '
 
 .PHONY: all clean dependents
